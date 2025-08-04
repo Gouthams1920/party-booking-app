@@ -1,0 +1,350 @@
+{
+  "info": {
+    "name": "Birthday Party Booking API",
+    "description": "Complete API collection for the Birthday Party Hall Booking application",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "adminToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('adminToken', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Halls",
+      "item": [
+        {
+          "name": "Get All Halls (Public)",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/halls",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "halls"]
+            }
+          }
+        },
+        {
+          "name": "Get Single Hall",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/api/halls/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "halls", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "hall_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Create Hall (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Grand Ballroom\",\n  \"description\": \"Elegant ballroom perfect for large celebrations\",\n  \"location\": \"Downtown\",\n  \"price\": 500,\n  \"capacity\": 200,\n  \"amenities\": [\"WiFi\", \"Parking\", \"Catering\", \"Sound System\"],\n  \"images\": [\"https://example.com/image1.jpg\", \"https://example.com/image2.jpg\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/halls",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "halls"]
+            }
+          }
+        },
+        {
+          "name": "Update Hall (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Grand Ballroom\",\n  \"price\": 600\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/halls/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "halls", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "hall_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Hall (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/halls/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "halls", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "hall_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bookings",
+      "item": [
+        {
+          "name": "Create Booking",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerName\": \"John Doe\",\n  \"customerEmail\": \"john@example.com\",\n  \"customerPhone\": \"+1234567890\",\n  \"hallId\": \"hall_id_here\",\n  \"date\": \"2024-12-25\",\n  \"startTime\": \"18:00\",\n  \"endTime\": \"22:00\",\n  \"numberOfGuests\": 50,\n  \"specialRequests\": \"Birthday decorations and cake\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get All Bookings (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings"]
+            }
+          }
+        },
+        {
+          "name": "Get Booking by ID (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Update Booking Status (Admin)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminToken}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"completed\",\n  \"paymentStatus\": \"completed\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Confirm Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentIntentId\": \"pi_1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/bookings/:id/confirm-payment",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "bookings", ":id", "confirm-payment"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "booking_id_here"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Server Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/",
+              "host": ["{{baseUrl}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
